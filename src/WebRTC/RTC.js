@@ -116,10 +116,10 @@ exports._iceEventCandidate = function(nothing) {
     };
 };
 
-exports.addIceCandidate = function(c) {
+exports._addIceCandidate = function(c) {
     return function(pc) {
         return function() {
-            pc.addIceCandidate(new RTCIceCandidate(c));
+            pc.addIceCandidate(c);
         };
     };
 };
