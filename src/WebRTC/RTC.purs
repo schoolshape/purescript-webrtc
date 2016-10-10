@@ -43,7 +43,7 @@ foreign import addStream
 
 foreign import data IceEvent :: *
 
-type RTCIceCandidateInit = { sdpMLineIndex :: Nullable Int
+type RTCIceCandidateInit = { sdpMLineIndex :: Maybe Int
                            , sdpMid :: Maybe String
                            , candidate :: String
                            }
@@ -54,13 +54,13 @@ type RTCIceCandidateInitJS = { sdpMLineIndex :: Nullable Int
                              }
 
 iceCandidateToJS :: RTCIceCandidateInit -> RTCIceCandidateInitJS
-iceCandidateToJS candidate = { sdpMLineIndex : candidate.sdpMLineIndex
+iceCandidateToJS candidate = { sdpMLineIndex : toNullable candidate.sdpMLineIndex
                              , sdpMid : toNullable candidate.sdpMid
                              , candidate : candidate.candidate
                              }
 
 iceCandidateFromJS :: RTCIceCandidateInitJS -> RTCIceCandidateInit
-iceCandidateFromJS candidate = { sdpMLineIndex : candidate.sdpMLineIndex
+iceCandidateFromJS candidate = { sdpMLineIndex : toMaybe candidate.sdpMLineIndex
                                , sdpMid : toMaybe candidate.sdpMid
                                , candidate : candidate.candidate
                                }
