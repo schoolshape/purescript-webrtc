@@ -4,7 +4,7 @@ module WebRTC.RTC (
 , Ice(..)
 , IceEvent(..)
 , MediaStreamEvent(..)
-, RTCIceCandidate(..)
+, RTCIceCandidateInit(..)
 , RTCDataChannel(..)
 , newRTCPeerConnection
 , addStream
@@ -22,13 +22,13 @@ module WebRTC.RTC (
 , onmessageChannel
 ) where
 
-import WebRTC.MediaStream
+import Prelude
 import Control.Monad.Aff (Aff, makeAff)
 import Control.Monad.Eff (Eff)
 import Control.Monad.Eff.Exception (Error)
 import Data.Maybe (Maybe(..))
-import Data.Nullable (Nullable)
-import Prelude (Unit, unit)
+import Data.Nullable (toMaybe, toNullable, Nullable)
+import WebRTC.MediaStream (MediaStream)
 
 foreign import data RTCPeerConnection :: *
 
@@ -42,24 +42,46 @@ foreign import addStream
 
 foreign import data IceEvent :: *
 
-type RTCIceCandidate = { sdpMLineIndex :: Nullable Int
-                       , sdpMid :: Nullable String
-                       , candidate :: String
-                       }
+type RTCIceCandidateInit = { sdpMLineIndex :: Nullable Int
+                           , sdpMid :: Maybe String
+                           , candidate :: String
+                           }
+
+type RTCIceCandidateInitJS = { sdpMLineIndex :: Nullable Int
+                             , sdpMid :: Nullable String
+                             , candidate :: String
+                             }
+
+iceCandidateToJS :: RTCIceCandidateInit -> RTCIceCandidateInitJS
+iceCandidateToJS candidate = { sdpMLineIndex : candidate.sdpMLineIndex
+                             , sdpMid : toNullable candidate.sdpMid
+                             , candidate : candidate.candidate
+                             }
+
+iceCandidateFromJS :: RTCIceCandidateInitJS -> RTCIceCandidateInit
+iceCandidateFromJS candidate = { sdpMLineIndex : candidate.sdpMLineIndex
+                               , sdpMid : toMaybe candidate.sdpMid
+                               , candidate : candidate.candidate
+                               }
 
 foreign import _iceEventCandidate
   :: forall a. Maybe a ->
                (a -> Maybe a) ->
                IceEvent ->
-               Maybe RTCIceCandidate
+               Maybe RTCIceCandidateInitJS
 
-iceEventCandidate :: IceEvent -> Maybe RTCIceCandidate
-iceEventCandidate = _iceEventCandidate Nothing Just
+iceEventCandidate :: IceEvent -> Maybe RTCIceCandidateInit
+iceEventCandidate = map iceCandidateFromJS <<< _iceEventCandidate Nothing Just
 
-foreign import addIceCandidate
-  :: forall e. RTCIceCandidate ->
+foreign import _addIceCandidate
+  :: forall e. Nullable RTCIceCandidateInitJS ->
                RTCPeerConnection ->
                Eff e Unit
+
+addIceCandidate :: forall e. Maybe RTCIceCandidateInit
+                   -> RTCPeerConnection
+                   -> Eff e Unit
+addIceCandidate candidate connection = _addIceCandidate (toNullable <<< map iceCandidateToJS $ candidate) connection
 
 foreign import onicecandidate
   :: forall e. (IceEvent -> Eff e Unit) ->
