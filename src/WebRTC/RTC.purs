@@ -1,5 +1,6 @@
 module WebRTC.RTC (
   RTCPeerConnection(..)
+, RTCSessionDescriptionInit
 , RTCSessionDescription(..)
 , Ice(..)
 , IceEvent(..)
@@ -95,10 +96,13 @@ foreign import onaddstream
                RTCPeerConnection ->
                Eff e Unit
 
+
+type RTCSessionDescriptionInit = { sdp :: String, "type" :: String }
+
 foreign import data RTCSessionDescription :: *
 
 foreign import newRTCSessionDescription
-  :: { sdp :: String, "type" :: String } -> RTCSessionDescription
+  :: RTCSessionDescriptionInit -> RTCSessionDescription
 
 foreign import _createOffer
   :: forall e. (RTCSessionDescription -> Eff e Unit) ->
