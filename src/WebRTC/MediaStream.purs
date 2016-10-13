@@ -29,7 +29,7 @@ foreign import data USER_MEDIA :: !
 getUserMedia :: forall e. MediaStreamConstraints -> Aff (userMedia :: USER_MEDIA | e) MediaStream
 getUserMedia c = makeAff (\e s -> _getUserMedia s e c)
 
-foreign import getTracks :: MediaStream -> Array MediaStreamTrack
+foreign import getTracks :: forall e. MediaStream -> Eff e (Array MediaStreamTrack)
 
 
 newtype MediaStreamConstraints =
