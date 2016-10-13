@@ -4,7 +4,18 @@ exports._getUserMedia = function(success) {
     return function(error) {
         return function(constraints) {
             return function() {
-                var getUserMedia = navigator.mediaDevices.getUserMedia
+                var mediaDevicesGetUserMedia = null;
+                if (typeof navigator.mediaDevices != "undefined") {
+                    mediaDevicesGetUserMedia =
+                        function (constraints, success,error) {
+                            navigator.mediaDevices.getUserMedia(constraints).then(success).catch(error);
+                        };
+
+                }
+                else {
+                    mediaDevicesGetUserMedia = null;
+                }
+                var getUserMedia = mediaDevicesGetUserMedia
                         || navigator.getUserMedia
                         || navigator.webkitGetUserMedia
                         || navigator.mozGetUserMedia;
