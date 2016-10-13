@@ -36,3 +36,7 @@ exports.createObjectURL = function(blob) {
         return URL.createObjectURL(blob);
     };
 };
+
+exports.getTracks = function(stream) {
+    stream.getTracks();
+};
