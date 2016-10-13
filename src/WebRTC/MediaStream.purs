@@ -4,6 +4,7 @@ module WebRTC.MediaStream (
 , Blob(..)
 , USER_MEDIA()
 , getUserMedia
+, getTracks
 , mediaStreamToBlob
 , createObjectURL
 ) where
