@@ -99,6 +99,8 @@ foreign import onaddstream
 
 type RTCSessionDescriptionInit = { sdp :: String, "type" :: String }
 
+foreign import fromRTCSessionDescription :: RTCSessionDescription -> RTCSessionDescriptionInit
+
 foreign import data RTCSessionDescription :: *
 
 foreign import newRTCSessionDescription
