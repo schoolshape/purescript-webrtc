@@ -31,6 +31,11 @@ exports._getUserMedia = function(success) {
     };
 };
 
+exports.clone = function(stream) {
+    return function() {
+        return stream.clone();
+    };
+};
 exports.createObjectURL = function(blob) {
     return function() {
         return URL.createObjectURL(blob);
