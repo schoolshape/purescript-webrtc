@@ -160,8 +160,8 @@ exports.onmessageChannel = function(f) {
 };
 
 exports.fromRTCSessionDescription = function(description) {
-    return { "sdp" : description.sdp
-             , "type" : description."type"
+    return { "sdp" : description["sdp"]
+             , "type" : description["type"]
            };
 };
 
