@@ -100,49 +100,49 @@ foreign import onaddstream
 
 type RTCSessionDescriptionInit = { sdp :: String, "type" :: String }
 
+-- Those should not be needed: -----------------
 foreign import fromRTCSessionDescription :: RTCSessionDescription -> RTCSessionDescriptionInit
-
 foreign import data RTCSessionDescription :: *
-
 foreign import newRTCSessionDescription
   :: RTCSessionDescriptionInit -> RTCSessionDescription
+----------------------------------
 
 foreign import _createOffer
-  :: forall e. (RTCSessionDescription -> Eff e Unit) ->
+  :: forall e. (RTCSessionDescriptionInit -> Eff e Unit) ->
                (Error -> Eff e Unit) ->
                RTCPeerConnection ->
                Eff e Unit
 
-createOffer :: forall e. RTCPeerConnection -> Aff e RTCSessionDescription
+createOffer :: forall e. RTCPeerConnection -> Aff e RTCSessionDescriptionInit
 createOffer pc = makeAff (\e s -> _createOffer s e pc)
 
 foreign import _createAnswer
-  :: forall e. (RTCSessionDescription -> Eff e Unit) ->
+  :: forall e. (RTCSessionDescriptionInit -> Eff e Unit) ->
                (Error -> Eff e Unit) ->
                RTCPeerConnection ->
                Eff e Unit
 
-createAnswer :: forall e. RTCPeerConnection -> Aff e RTCSessionDescription
+createAnswer :: forall e. RTCPeerConnection -> Aff e RTCSessionDescriptionInit
 createAnswer pc = makeAff (\e s -> _createAnswer s e pc)
 
 foreign import _setLocalDescription
   :: forall e. Eff e Unit ->
                (Error -> Eff e Unit) ->
-               RTCSessionDescription ->
+               RTCSessionDescriptionInit ->
                RTCPeerConnection ->
                Eff e Unit
 
-setLocalDescription :: forall e. RTCSessionDescription -> RTCPeerConnection -> Aff e Unit
+setLocalDescription :: forall e. RTCSessionDescriptionInit -> RTCPeerConnection -> Aff e Unit
 setLocalDescription desc pc = makeAff (\e s -> _setLocalDescription (s unit) e desc pc)
 
 foreign import _setRemoteDescription
   :: forall e. Eff e Unit ->
                (Error -> Eff e Unit) ->
-               RTCSessionDescription ->
+               RTCSessionDescriptionInit ->
                RTCPeerConnection ->
                Eff e Unit
 
-setRemoteDescription :: forall e. RTCSessionDescription -> RTCPeerConnection -> Aff e Unit
+setRemoteDescription :: forall e. RTCSessionDescriptionInit -> RTCPeerConnection -> Aff e Unit
 setRemoteDescription desc pc = makeAff (\e s -> _setRemoteDescription (s unit) e desc pc)
 
 foreign import data RTCDataChannel :: *
