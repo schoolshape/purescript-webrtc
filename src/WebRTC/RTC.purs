@@ -21,6 +21,7 @@ module WebRTC.RTC (
 , createDataChannel
 , send
 , onmessageChannel
+, fromRTCSessionDescription
 ) where
 
 import Prelude
