@@ -8,6 +8,7 @@ module WebRTC.MediaStream (
 , mediaStreamToBlob
 , createObjectURL
 , clone
+, stopStream
 ) where
 
 import Prelude
