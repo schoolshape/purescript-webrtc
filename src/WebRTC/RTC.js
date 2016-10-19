@@ -119,7 +119,9 @@ exports._iceEventCandidate = function(nothing) {
 exports._addIceCandidate = function(c) {
     return function(pc) {
         return function() {
+            console.log("Trying to add ice candidate: " +JSON.stringify(c, null, 4));
             pc.addIceCandidate(c);
+            console.log("Successfully added ice candidate!");
         };
     };
 };
