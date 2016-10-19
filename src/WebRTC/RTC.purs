@@ -76,14 +76,16 @@ iceEventCandidate :: IceEvent -> Maybe RTCIceCandidateInit
 iceEventCandidate = map iceCandidateFromJS <<< _iceEventCandidate Nothing Just
 
 foreign import _addIceCandidate
-  :: forall e. Nullable RTCIceCandidateInitJS ->
-               RTCPeerConnection ->
-               Eff e Unit
+  :: forall e. Nullable RTCIceCandidateInitJS
+     -> RTCPeerConnection
+     -> (Error -> Eff e Unit)
+     -> (Unit -> Eff e Unit)
+     -> Eff e Unit
 
 addIceCandidate :: forall e. Maybe RTCIceCandidateInit
                    -> RTCPeerConnection
-                   -> Eff e Unit
-addIceCandidate candidate connection = _addIceCandidate (toNullable <<< map iceCandidateToJS $ candidate) connection
+                   -> Aff e Unit
+addIceCandidate candidate connection = makeAff (_addIceCandidate (toNullable <<< map iceCandidateToJS $ candidate) connection)
 
 foreign import onicecandidate
   :: forall e. (IceEvent -> Eff e Unit) ->
