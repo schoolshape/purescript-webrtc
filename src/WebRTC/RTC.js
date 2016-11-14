@@ -28,6 +28,14 @@ exports.onicecandidate = function(f) {
     };
 };
 
+exports.onnegotiationneeded = function(f) {
+    return function(pc) {
+        return function() {
+            pc.onnegotiationneeded = f;
+        };
+    };
+};
+
 exports.onaddstream = function(f) {
     return function(pc) {
         return function() {

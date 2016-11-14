@@ -11,6 +11,7 @@ module WebRTC.RTC (
 , closeRTCPeerConnection
 , addStream
 , onicecandidate
+, onnegotiationneeded
 , onaddstream
 , createOffer
 , createAnswer
@@ -90,6 +91,11 @@ addIceCandidate candidate connection = makeAff (_addIceCandidate (toNullable <<<
 
 foreign import onicecandidate
   :: forall e. (IceEvent -> Eff e Unit) ->
+               RTCPeerConnection ->
+               Eff e Unit
+
+foreign import onnegotiationneeded
+  :: forall e. Eff e Unit ->
                RTCPeerConnection ->
                Eff e Unit
 
