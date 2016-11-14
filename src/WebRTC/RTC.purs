@@ -163,3 +163,5 @@ foreign import onmessageChannel
   :: forall e. (String -> Eff e Unit) ->
                RTCDataChannel ->
                Eff e Unit
+
+foreign import close :: forall e. RTCPeerConnection -> Eff e Unit

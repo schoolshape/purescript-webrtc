@@ -128,6 +128,12 @@ exports._addIceCandidate = function(c) {
     };
 };
 
+exports.close =  function(pc) {
+    return function() {
+        pc.close();
+    };
+};
+
 exports.newRTCSessionDescription = function(s) {
     return new RTCSessionDescription(s);
 };
