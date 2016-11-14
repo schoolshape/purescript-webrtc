@@ -164,4 +164,4 @@ foreign import onmessageChannel
                RTCDataChannel ->
                Eff e Unit
 
-foreign import close :: forall e. RTCPeerConnection -> Eff e Unit
+foreign import closeRTCPeerConnection :: forall e. RTCPeerConnection -> Eff e Unit

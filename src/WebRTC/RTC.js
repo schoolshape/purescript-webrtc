@@ -128,7 +128,7 @@ exports._addIceCandidate = function(c) {
     };
 };
 
-exports.close =  function(pc) {
+exports.closeRTCPeerConnection =  function(pc) {
     return function() {
         pc.close();
     };
