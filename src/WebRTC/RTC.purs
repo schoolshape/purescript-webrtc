@@ -8,6 +8,7 @@ module WebRTC.RTC (
 , RTCIceCandidateInit(..)
 , RTCDataChannel(..)
 , newRTCPeerConnection
+, closeRTCPeerConnection
 , addStream
 , onicecandidate
 , onaddstream
