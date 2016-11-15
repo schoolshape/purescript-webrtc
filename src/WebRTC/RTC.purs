@@ -3,6 +3,8 @@ module WebRTC.RTC (
 , RTCSessionDescriptionInit
 , RTCSessionDescription(..)
 , Ice(..)
+, RTCIceServerObject
+, FullRTCIceServerObject
 , IceEvent(..)
 , MediaStreamEvent(..)
 , RTCIceCandidateInit(..)
@@ -36,10 +38,17 @@ import WebRTC.MediaStream (MediaStream)
 
 foreign import data RTCPeerConnection :: *
 
-type Ice = { iceServers :: Array { url :: String } }
+type RTCIceServerObject r   = { url :: String | r }
+type FullRTCIceServerObject = { url :: String
+                              , username :: String
+                              , credential :: String
+                              , credentialType :: String
+                              }
+
+type Ice r = { iceServers :: Array (RTCIceServerObject r) }
 
 foreign import newRTCPeerConnection
-  :: forall e. Ice -> Eff e RTCPeerConnection
+  :: forall e r. Ice r -> Eff e RTCPeerConnection
 
 foreign import addStream
   :: forall e. MediaStream -> RTCPeerConnection -> Eff e Unit
