@@ -38,8 +38,8 @@ import WebRTC.MediaStream (MediaStream)
 
 foreign import data RTCPeerConnection :: *
 
-type RTCIceServerObject r   = { url :: String | r }
-type FullRTCIceServerObject = { url :: String
+type RTCIceServerObject r   = { urls :: Array String | r }
+type FullRTCIceServerObject = { urls :: Array String
                               , username :: String
                               , credential :: String
                               , credentialType :: String
