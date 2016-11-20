@@ -158,9 +158,3 @@ exports.onmessageChannel = function(f) {
         };
     };
 };
-
-exports.newWebSocket = function(url) {
-    return function() {
-        return new WebSocket(url);
-    };
-};
