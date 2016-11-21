@@ -1,7 +1,6 @@
 module WebRTC.MediaStream (
   MediaStream(..)
 , MediaStreamConstraints(..)
-, Blob(..)
 , USER_MEDIA()
 , getUserMedia
 , mediaStreamToBlob
@@ -14,10 +13,10 @@ import Unsafe.Coerce (unsafeCoerce)
 import Control.Monad.Aff (Aff(), makeAff)
 import Control.Monad.Eff (Eff())
 import Control.Monad.Eff.Exception (Error())
+import DOM.File.Types (Blob)
 
 
 foreign import data MediaStream :: *
-foreign import data Blob :: *
 foreign import data USER_MEDIA :: !
 
 
@@ -32,9 +31,9 @@ foreign import _getUserMedia
 
 
 newtype MediaStreamConstraints =
-  MediaStreamConstraints { video :: Boolean
-                         , audio :: Boolean
-                         }
+    MediaStreamConstraints { video :: Boolean
+                           , audio :: Boolean
+                           }
 
 
 getUserMedia :: forall e. MediaStreamConstraints -> Aff (userMedia :: USER_MEDIA | e) MediaStream
