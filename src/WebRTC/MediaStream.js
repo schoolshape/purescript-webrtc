@@ -4,7 +4,9 @@ exports._getUserMedia = function(success) {
     return function(error) {
         return function(constraints) {
             return function() {
-                var getUserMedia = navigator.getUserMedia
+                var getUserMedia =
+                    (navigator.mediaDevices && navigator.mediaDevices.getUserMedia)
+                    || navigator.getUserMedia
                     || navigator.webkitGetUserMedia
                     || navigator.mozGetUserMedia;
 
