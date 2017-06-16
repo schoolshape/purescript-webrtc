@@ -2,6 +2,7 @@ module WebRTC.MediaRecorder where
 
 import Prelude
 import Control.Monad.Eff (Eff)
+import Control.Monad.Eff.Exception (Error)
 import DOM.File.Types (Blob)
 import Data.MediaType (MediaType)
 import WebRTC.MediaStream (MediaStream)
@@ -32,3 +33,5 @@ foreign import mediaRecorder
 
 foreign import start :: forall e. MediaRecorder -> Eff (MREff e) Unit
 foreign import stop  :: forall e. MediaRecorder -> Eff (MREff e) Unit
+foreign import onRecordStop ::
+  forall e. MediaRecorder -> (Error -> Eff e Unit) -> (Unit -> Eff e Unit) -> Eff e Unit

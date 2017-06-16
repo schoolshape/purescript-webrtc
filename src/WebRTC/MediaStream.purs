@@ -1,8 +1,11 @@
-module WebRTC.MediaStream (
-  MediaStream(..)
+module WebRTC.MediaStream
+( MediaStream(..)
 , MediaStreamConstraints(..)
 , USER_MEDIA()
+, hasUserMedia
 , getUserMedia
+, stopMediaStream
+, playAudioStream
 , mediaStreamToBlob
 , createObjectURL
 ) where
@@ -22,12 +25,16 @@ foreign import data USER_MEDIA :: !
 
 foreign import createObjectURL :: forall e. Blob -> Eff e String
 
-
+foreign import hasUserMedia :: Boolean
 foreign import _getUserMedia
   :: forall e. (MediaStream -> Eff e Unit) ->
                (Error -> Eff e Unit) ->
                MediaStreamConstraints ->
                Eff e Unit
+
+
+foreign import stopMediaStream :: forall e. MediaStream -> Eff (userMedia :: USER_MEDIA | e) Unit
+foreign import playAudioStream :: forall e. MediaStream -> Eff (userMedia :: USER_MEDIA | e ) Unit
 
 
 newtype MediaStreamConstraints =
@@ -38,6 +45,8 @@ newtype MediaStreamConstraints =
 
 getUserMedia :: forall e. MediaStreamConstraints -> Aff (userMedia :: USER_MEDIA | e) MediaStream
 getUserMedia c = makeAff (\e s -> _getUserMedia s e c)
+
+
 
 
 mediaStreamToBlob :: MediaStream -> Blob

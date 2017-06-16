@@ -1,5 +1,6 @@
-module WebRTC.RTC (
-  RTCPeerConnection(..)
+module WebRTC.RTC
+( RTCPeerConnection(..)
+, hasRTC
 , RTCSessionDescription(..)
 , Ice(..)
 , IceEvent(..)
@@ -7,6 +8,7 @@ module WebRTC.RTC (
 , RTCIceCandidate(..)
 , RTCDataChannel(..)
 , newRTCPeerConnection
+, closeRTCPeerConnection
 , addStream
 , onicecandidate
 , onaddstream
@@ -19,7 +21,10 @@ module WebRTC.RTC (
 , addIceCandidate
 , createDataChannel
 , send
-, onmessageChannel
+, onmessage
+, ondatachannel
+, onopen
+, onclose
 ) where
 
 import Prelude (Unit(), unit)
@@ -30,15 +35,25 @@ import Data.Maybe (Maybe(..))
 
 import WebRTC.MediaStream
 
+foreign import hasRTC :: Boolean
 
 foreign import data RTCPeerConnection :: *
 
 
-type Ice = { iceServers :: Array { url :: String } }
+type Ice =
+  { iceServers :: Array { url :: String, username :: String, credential :: String } }
 
 
 foreign import newRTCPeerConnection
   :: forall e. Ice -> Eff e RTCPeerConnection
+
+
+foreign import closeRTCPeerConnection
+  :: forall e. RTCPeerConnection -> Eff e Unit
+
+
+foreign import onclose
+  :: forall e. Eff e Unit -> RTCPeerConnection -> Eff e Unit
 
 
 foreign import addStream
@@ -141,20 +156,20 @@ setRemoteDescription desc pc = makeAff (\e s -> _setRemoteDescription (s unit) e
 
 foreign import data RTCDataChannel :: *
 
-
 foreign import createDataChannel
-  :: forall e. String ->
-               RTCPeerConnection ->
-               Eff e RTCDataChannel
-
+  :: forall e. String -> RTCPeerConnection -> Eff e RTCDataChannel
 
 foreign import send
-  :: forall e. String ->
-               RTCDataChannel ->
+  :: forall e. String -> RTCDataChannel -> Eff e Unit
+
+foreign import onmessage
+  :: forall e. (String -> Eff e Unit) -> RTCDataChannel -> Eff e Unit
+
+foreign import ondatachannel
+  :: forall e. (RTCDataChannel -> Eff e Unit) ->
+               RTCPeerConnection ->
                Eff e Unit
 
+foreign import onopen
+  :: forall e. (Eff e Unit) -> RTCDataChannel -> Eff e Unit
 
-foreign import onmessageChannel
-  :: forall e. (String -> Eff e Unit) ->
-               RTCDataChannel ->
-               Eff e Unit
