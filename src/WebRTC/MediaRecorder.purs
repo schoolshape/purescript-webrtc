@@ -25,6 +25,7 @@ type DataHandler e = Blob -> Eff e Unit
 type MREff e = (mediaRecorder :: MEDIA_RECORDER | e)
 
 
+foreign import hasMediaRecorder :: Boolean
 foreign import mediaRecorder
     :: forall e. MediaStream ->
                  MediaRecorderOptions ->

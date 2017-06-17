@@ -1,6 +1,6 @@
 // module WebRTC.RTC
 //
-exports.hasRTC = (RTCPeerConnection || webkitRTCPeerConnection || mozRTCPeerConnection || false) && true
+exports.hasRTC = (typeof RTCPeerConnection === "function") || (typeof webkitRTCPeerConnection === "function") || (typeof mozRTCPeerConnection === "function")
 
 exports.newRTCPeerConnection = function(ice) {
     return function() {

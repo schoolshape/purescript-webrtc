@@ -1,5 +1,6 @@
 // module WebRTC.MediaRecorder
 //
+exports.hasMediaRecorder = (typeof MediaRecorder !== "undefined")
 
 exports.mediaRecorder = function(mediaStream) {
     return function(options) {
@@ -11,7 +12,7 @@ exports.mediaRecorder = function(mediaStream) {
                     onDataAvailable(event)();
                 };
 
-                // Stop the recorder when all tracks in input stream stop
+                // Stop the recorder when all tracks stop
                 var activeTracks = 0;
                 mediaStream.getTracks().forEach(function(track) {
                     activeTracks += 1;

@@ -1,6 +1,6 @@
 // module WebRTC.MediaStream
 //
-exports.hasUserMedia = (navigator.mediaDevices && navigator.mediaDevices.getUserMedia && true) || false
+exports.hasUserMedia = (typeof navigator === "object") && (typeof navigator.mediaDevices === "object") && (typeof navigator.mediaDevices.getUserMedia === "function")
 
 exports._getUserMedia = function(success) {
     return function(error) {
