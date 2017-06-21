@@ -1,13 +1,18 @@
 // module WebRTC.RTC
 //
-exports.hasRTC = (typeof RTCPeerConnection === "function") || (typeof webkitRTCPeerConnection === "function") || (typeof mozRTCPeerConnection === "function")
+exports.hasRTC = typeof RTCPeerConnection === "function"
 
-exports.newRTCPeerConnection = function(ice) {
+exports.newRTCPeerConnection = function(psConfig) {
     return function() {
-        return new (RTCPeerConnection || webkitRTCPeerConnection || mozRTCPeerConnection)(ice, {
-            optional: [
-		            { DtlsSrtpKeyAgreement: true }
-	          ]
+        function nativeIceServer(psIceServer) {
+            return psIceServer.value0;
+        };
+        return new RTCPeerConnection({
+            bundlePolicy: psConfig.bundlePolicy.value0,
+            iceServers: psConfig.iceServers.map(nativeIceServer),
+            iceCandidatePoolSize: psConfig.iceCandidatePoolSize,
+            iceTransportPolicy: psConfig.iceTransportPolicy.value0, // TODO
+            peerIdentity: psConfig.peerIdentity.value0
         });
     };
 };
@@ -37,7 +42,17 @@ exports.addStream = function(stream) {
     return function(pc) {
         return function() {
             pc.addStream(stream);
+            //stream.getTracks().forEach(function(track) {
+                //pc.addTrack(track);
+            //});
         };
+    };
+};
+
+
+exports._signalingState = function(pc) {
+    return function() {
+        return pc.signalingState;
     };
 };
 
@@ -55,10 +70,10 @@ exports.onicecandidate = function(f) {
 };
 
 
-exports.onaddstream = function(f) {
+exports.ontrack= function(f) {
     return function(pc) {
         return function() {
-            pc.onaddstream = function(event) {
+            pc.ontrack = function(event) {
                 f(event)();
             };
         };

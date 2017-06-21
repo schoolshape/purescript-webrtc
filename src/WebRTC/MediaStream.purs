@@ -1,5 +1,6 @@
 module WebRTC.MediaStream
 ( MediaStream(..)
+, MediaStreamTrack(..)
 , MediaStreamConstraints(..)
 , USER_MEDIA()
 , hasUserMedia
@@ -20,8 +21,8 @@ import DOM.File.Types (Blob)
 
 
 foreign import data MediaStream :: *
+foreign import data MediaStreamTrack :: *
 foreign import data USER_MEDIA :: !
-
 
 foreign import createObjectURL :: forall e. Blob -> Eff e String
 
@@ -45,8 +46,6 @@ newtype MediaStreamConstraints =
 
 getUserMedia :: forall e. MediaStreamConstraints -> Aff (userMedia :: USER_MEDIA | e) MediaStream
 getUserMedia c = makeAff (\e s -> _getUserMedia s e c)
-
-
 
 
 mediaStreamToBlob :: MediaStream -> Blob

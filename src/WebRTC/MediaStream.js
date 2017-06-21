@@ -37,9 +37,10 @@ exports.stopMediaStream = function(mediaStream) {
 
 exports.playAudioStream = function(mediaStream) {
     return function() {
-        var url = URL.createObjectURL(mediaStream);
-        var player = new Audio(url);
+		console.log('Create stream player');
+        var player = new Audio();
         player.autoplay = true;
+		player.srcObject = mediaStream;
     };
 };
 
