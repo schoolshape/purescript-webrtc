@@ -1,15 +1,15 @@
 module WebRTC.MediaRecorder where
 
 import Prelude
-import Control.Monad.Eff (Eff)
+import Control.Monad.Eff (Eff, kind Effect)
 import Control.Monad.Eff.Exception (Error)
 import DOM.File.Types (Blob)
 import Data.MediaType (MediaType)
 import WebRTC.MediaStream (MediaStream)
 
 
-foreign import data MediaRecorder :: *
-foreign import data MEDIA_RECORDER :: !
+foreign import data MediaRecorder :: Type
+foreign import data MEDIA_RECORDER :: Effect
 
 
 data MediaRecorderOptions

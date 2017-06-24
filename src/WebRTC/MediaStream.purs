@@ -15,14 +15,14 @@ module WebRTC.MediaStream
 import Prelude (Unit())
 import Unsafe.Coerce (unsafeCoerce)
 import Control.Monad.Aff (Aff(), makeAff)
-import Control.Monad.Eff (Eff())
+import Control.Monad.Eff (Eff(), kind Effect)
 import Control.Monad.Eff.Exception (Error())
 import DOM.File.Types (Blob)
 
 
-foreign import data MediaStream :: *
-foreign import data MediaStreamTrack :: *
-foreign import data USER_MEDIA :: !
+foreign import data MediaStream :: Type
+foreign import data MediaStreamTrack :: Type
+foreign import data USER_MEDIA :: Effect
 
 foreign import createObjectURL :: forall e. Blob -> Eff e String
 

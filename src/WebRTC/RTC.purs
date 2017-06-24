@@ -40,7 +40,7 @@ import WebRTC.MediaStream (MediaStream, MediaStreamTrack)
 
 foreign import hasRTC :: Boolean
 
-foreign import data RTCPeerConnection :: *
+foreign import data RTCPeerConnection :: Type
 
 data RTCIceServer
   = STUNServer { urls :: Array String }
@@ -116,7 +116,7 @@ signalingState pc = stringToRTCSignalingState <$> _signalingState pc
 
 
 
-foreign import data IceEvent :: *
+foreign import data IceEvent :: Type
 
 
 type RTCIceCandidate = { sdpMLineIndex :: Int
@@ -157,7 +157,7 @@ foreign import ontrack
                Eff e Unit
 
 
-foreign import data RTCSessionDescription :: *
+foreign import data RTCSessionDescription :: Type
 
 
 foreign import newRTCSessionDescription
@@ -210,7 +210,7 @@ setRemoteDescription :: forall e. RTCSessionDescription -> RTCPeerConnection -> 
 setRemoteDescription desc pc = makeAff (\e s -> _setRemoteDescription (s unit) e desc pc)
 
 
-foreign import data RTCDataChannel :: *
+foreign import data RTCDataChannel :: Type
 
 foreign import createDataChannel
   :: forall e. String -> RTCPeerConnection -> Eff e RTCDataChannel
