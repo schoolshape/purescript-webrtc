@@ -61,8 +61,6 @@ exports.onicecandidate = function(f) {
     return function(pc) {
         return function() {
             pc.onicecandidate = function(event) {
-                if (event.candidate)
-                    console.log(event.candidate.candidate);
                 f(event)();
             };
         };

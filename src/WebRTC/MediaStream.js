@@ -37,7 +37,6 @@ exports.stopMediaStream = function(mediaStream) {
 
 exports.playAudioStream = function(mediaStream) {
     return function() {
-		console.log('Create stream player');
         var player = new Audio();
         player.autoplay = true;
 		player.srcObject = mediaStream;
