@@ -2,7 +2,7 @@
 //
 exports.hasUserMedia = (typeof navigator === "object") && (typeof navigator.mediaDevices === "object") && (typeof navigator.mediaDevices.getUserMedia === "function")
 
-exports._getUserMedia = function(success) {
+exports._getUserMediaOld = function(success) {
     return function(error) {
         return function(constraints) {
             return function() {
@@ -16,6 +16,22 @@ exports._getUserMedia = function(success) {
             };
         };
     };
+}
+
+exports._getUserMedia = function(constraints) {
+    return function(onError, onSuccess) {
+        navigator.mediaDevices.getUserMedia(constraints)
+            .then(function(mediaStream) {
+                onSuccess(mediaStream);
+            })
+            .catch(function(e) {
+                onError(e);
+            });
+
+        return function(cancelError, cancelerError, cancelerSuccess) {
+            cancelerSuccess();
+        };
+    }
 };
 
 

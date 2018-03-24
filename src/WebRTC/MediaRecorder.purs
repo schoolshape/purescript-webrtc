@@ -1,8 +1,10 @@
 module WebRTC.MediaRecorder where
 
 import Prelude
+
+import Control.Monad.Aff (Aff)
+import Control.Monad.Aff.Compat (EffFnAff, fromEffFnAff)
 import Control.Monad.Eff (Eff, kind Effect)
-import Control.Monad.Eff.Exception (Error)
 import DOM.File.Types (Blob)
 import Data.MediaType (MediaType)
 import WebRTC.MediaStream (MediaStream)
@@ -27,12 +29,15 @@ type MREff e = (mediaRecorder :: MEDIA_RECORDER | e)
 
 foreign import hasMediaRecorder :: Boolean
 foreign import mediaRecorder
-    :: forall e. MediaStream ->
+    :: ∀ e. MediaStream ->
                  MediaRecorderOptions ->
                  DataHandler e ->
                  Eff (MREff e) MediaRecorder
 
-foreign import start :: forall e. MediaRecorder -> Eff (MREff e) Unit
-foreign import stop  :: forall e. MediaRecorder -> Eff (MREff e) Unit
-foreign import onRecordStop ::
-  forall e. MediaRecorder -> (Error -> Eff e Unit) -> (Unit -> Eff e Unit) -> Eff e Unit
+foreign import start :: ∀ e. MediaRecorder -> Eff (MREff e) Unit
+foreign import stop  :: ∀ e. MediaRecorder -> Eff (MREff e) Unit
+foreign import onRecordStop_ :: ∀ e. MediaRecorder -> EffFnAff e Unit
+
+
+onRecordStop :: ∀ e. MediaRecorder -> Aff e Unit
+onRecordStop = fromEffFnAff <<< onRecordStop_

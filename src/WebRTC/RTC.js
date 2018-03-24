@@ -79,79 +79,40 @@ exports.ontrack= function(f) {
 };
 
 
-exports._createOffer = function(success) {
-    return function(error) {
-        return function(pc) {
-            return function() {
-                pc.createOffer()
-                  .then(function(offer) {
-                      success(new RTCSessionDescription(offer))();
-                  })
-                  .catch(function(e) {
-                      error(e)();
-                  });
-            };
-        };
+exports._createOffer = function(pc) {
+    return function(error, success) {
+    pc.createOffer()
+        .then(function(offer) {
+            success(new RTCSessionDescription(offer))();
+        })
+        .catch(error);
+        return function(a, b, cancelerSuccess) { cancellerSuccess(); };
     };
 };
 
 
-exports._createAnswer = function(success) {
-    return function(error) {
-        return function(pc) {
-            return function() {
-                pc.createAnswer(
-                    function(desc) {
-                        success(desc)();
-                    },
-                    function(e) {
-                        error(e)();
-                    }
-                );
-            };
-        };
+exports._createAnswer = function(pc) {
+    return function(error, success) {
+        pc.createAnswer(success, error);
+        return function(a, b, cancelerSuccess) { cancellerSuccess(); };
     };
 };
 
 
-exports._setLocalDescription = function(success) {
-    return function(error) {
-        return function(desc) {
-            return function(pc) {
-                return function() {
-                    pc.setLocalDescription(
-                        desc,
-                        function() {
-                            success();
-                        },
-                        function(e) {
-                            error(e)();
-                        }
-                    );
-                };
-            };
-        };
+exports._setLocalDescription = function(desc) { return function(pc) {
+    return function(error, success) {
+        pc.setLocalDescription(desc, success, error);
+        return function(a, b, cancelerSuccess) { cancellerSuccess(); };
     };
-};
+};};
 
 
-exports._setRemoteDescription = function(success) {
-    return function(error) {
-        return function(desc) {
-            return function(pc) {
-                return function() {
-                    pc.setRemoteDescription(
-                        desc,
-                        success,
-                        function(e) {
-                            error(e)();
-                        }
-                    );
-                };
-            };
-        };
+exports._setRemoteDescription = function(desc) { return function(pc) {
+    return function(error, success) {
+        pc.setRemoteDescription(desc, success, error);
+        return function(a, b, cancelerSuccess) { cancellerSuccess(); };
     };
-};
+};};
 
 
 exports._iceEventCandidate = function(nothing) {

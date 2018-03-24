@@ -32,9 +32,10 @@ module WebRTC.RTC
 ) where
 
 import Prelude
-import Control.Monad.Aff (Aff, makeAff)
+
+import Control.Monad.Aff (Aff)
+import Control.Monad.Aff.Compat (EffFnAff, fromEffFnAff)
 import Control.Monad.Eff (Eff)
-import Control.Monad.Eff.Exception (Error)
 import Data.Maybe (Maybe(..))
 import WebRTC.MediaStream (MediaStream, MediaStreamTrack)
 
@@ -82,23 +83,23 @@ defaultRTCConfiguration =
 
 
 foreign import newRTCPeerConnection
-  :: forall e. RTCConfiguration -> Eff e RTCPeerConnection
+  :: ∀ e. RTCConfiguration -> Eff e RTCPeerConnection
 
 
 foreign import closeRTCPeerConnection
-  :: forall e. RTCPeerConnection -> Eff e Unit
+  :: ∀ e. RTCPeerConnection -> Eff e Unit
 
 
 foreign import onclose
-  :: forall e. Eff e Unit -> RTCPeerConnection -> Eff e Unit
+  :: ∀ e. Eff e Unit -> RTCPeerConnection -> Eff e Unit
 
 
 foreign import addStream
-  :: forall e. MediaStream -> RTCPeerConnection -> Eff e Unit
+  :: ∀ e. MediaStream -> RTCPeerConnection -> Eff e Unit
 
 
 -- Getting the signalling state
-foreign import _signalingState :: forall e. RTCPeerConnection -> Eff e String
+foreign import _signalingState :: ∀ e. RTCPeerConnection -> Eff e String
 
 
 stringToRTCSignalingState :: String -> RTCSignalingState
@@ -111,9 +112,8 @@ stringToRTCSignalingState =
     "have-remote-pranswer" -> HaveRemoteProvisionalAnswer
     other                  -> UnknownValue other
 
-signalingState :: forall e. RTCPeerConnection -> Eff e RTCSignalingState
+signalingState :: ∀ e. RTCPeerConnection -> Eff e RTCSignalingState
 signalingState pc = stringToRTCSignalingState <$> _signalingState pc
-
 
 
 foreign import data IceEvent :: Type
@@ -126,7 +126,7 @@ type RTCIceCandidate = { sdpMLineIndex :: Int
 
 
 foreign import _iceEventCandidate
-  :: forall a. Maybe a ->
+  :: ∀ a. Maybe a ->
                (a -> Maybe a) ->
                IceEvent ->
                Maybe RTCIceCandidate
@@ -137,13 +137,13 @@ iceEventCandidate = _iceEventCandidate Nothing Just
 
 
 foreign import addIceCandidate
-  :: forall e. RTCIceCandidate ->
+  :: ∀ e. RTCIceCandidate ->
                RTCPeerConnection ->
                Eff e Unit
 
 
 foreign import onicecandidate
-  :: forall e. (IceEvent -> Eff e Unit) ->
+  :: ∀ e. (IceEvent -> Eff e Unit) ->
                RTCPeerConnection ->
                Eff e Unit
 
@@ -152,7 +152,7 @@ type RTCTrackEvent = { streams :: Array MediaStream, track :: MediaStreamTrack }
 
 
 foreign import ontrack
-  :: forall e. (RTCTrackEvent -> Eff e Unit) ->
+  :: ∀ e. (RTCTrackEvent -> Eff e Unit) ->
                RTCPeerConnection ->
                Eff e Unit
 
@@ -165,67 +165,53 @@ foreign import newRTCSessionDescription
 
 
 foreign import _createOffer
-  :: forall e. (RTCSessionDescription -> Eff e Unit) ->
-               (Error -> Eff e Unit) ->
-               RTCPeerConnection ->
-               Eff e Unit
+  :: ∀ e. RTCPeerConnection -> EffFnAff e RTCSessionDescription
 
 
-createOffer :: forall e. RTCPeerConnection -> Aff e RTCSessionDescription
-createOffer pc = makeAff (\e s -> _createOffer s e pc)
+createOffer :: ∀ e. RTCPeerConnection -> Aff e RTCSessionDescription
+createOffer = fromEffFnAff <<< _createOffer
 
 
 foreign import _createAnswer
-  :: forall e. (RTCSessionDescription -> Eff e Unit) ->
-               (Error -> Eff e Unit) ->
-               RTCPeerConnection ->
-               Eff e Unit
+  :: ∀ e. RTCPeerConnection -> EffFnAff e RTCSessionDescription
 
 
-createAnswer :: forall e. RTCPeerConnection -> Aff e RTCSessionDescription
-createAnswer pc = makeAff (\e s -> _createAnswer s e pc)
+createAnswer :: ∀ e. RTCPeerConnection -> Aff e RTCSessionDescription
+createAnswer = fromEffFnAff <<< _createAnswer
 
 
 foreign import _setLocalDescription
-  :: forall e. Eff e Unit ->
-               (Error -> Eff e Unit) ->
-               RTCSessionDescription ->
-               RTCPeerConnection ->
-               Eff e Unit
+  :: ∀ e. RTCSessionDescription -> RTCPeerConnection -> EffFnAff e Unit
 
 
-setLocalDescription :: forall e. RTCSessionDescription -> RTCPeerConnection -> Aff e Unit
-setLocalDescription desc pc = makeAff (\e s -> _setLocalDescription (s unit) e desc pc)
+setLocalDescription :: ∀ e. RTCSessionDescription -> RTCPeerConnection -> Aff e Unit
+setLocalDescription desc pc = fromEffFnAff $ _setLocalDescription desc pc
 
 
 foreign import _setRemoteDescription
-  :: forall e. Eff e Unit ->
-               (Error -> Eff e Unit) ->
-               RTCSessionDescription ->
-               RTCPeerConnection ->
-               Eff e Unit
+  :: ∀ e. RTCSessionDescription -> RTCPeerConnection -> EffFnAff e Unit
 
 
-setRemoteDescription :: forall e. RTCSessionDescription -> RTCPeerConnection -> Aff e Unit
-setRemoteDescription desc pc = makeAff (\e s -> _setRemoteDescription (s unit) e desc pc)
+setRemoteDescription :: ∀ e. RTCSessionDescription -> RTCPeerConnection -> Aff e Unit
+setRemoteDescription desc pc = fromEffFnAff $ _setRemoteDescription desc pc
 
 
 foreign import data RTCDataChannel :: Type
 
 foreign import createDataChannel
-  :: forall e. String -> RTCPeerConnection -> Eff e RTCDataChannel
+  :: ∀ e. String -> RTCPeerConnection -> Eff e RTCDataChannel
 
 foreign import send
-  :: forall e. String -> RTCDataChannel -> Eff e Unit
+  :: ∀ e. String -> RTCDataChannel -> Eff e Unit
 
 foreign import onmessage
-  :: forall e. (String -> Eff e Unit) -> RTCDataChannel -> Eff e Unit
+  :: ∀ e. (String -> Eff e Unit) -> RTCDataChannel -> Eff e Unit
 
 foreign import ondatachannel
-  :: forall e. (RTCDataChannel -> Eff e Unit) ->
+  :: ∀ e. (RTCDataChannel -> Eff e Unit) ->
                RTCPeerConnection ->
                Eff e Unit
 
 foreign import onopen
-  :: forall e. (Eff e Unit) -> RTCDataChannel -> Eff e Unit
+  :: ∀ e. (Eff e Unit) -> RTCDataChannel -> Eff e Unit
 

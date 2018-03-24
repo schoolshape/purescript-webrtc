@@ -12,11 +12,11 @@ module WebRTC.MediaStream
 ) where
 
 
-import Prelude (Unit())
+import Prelude
 import Unsafe.Coerce (unsafeCoerce)
-import Control.Monad.Aff (Aff(), makeAff)
+import Control.Monad.Aff (Aff)
+import Control.Monad.Aff.Compat (EffFnAff, fromEffFnAff)
 import Control.Monad.Eff (Eff(), kind Effect)
-import Control.Monad.Eff.Exception (Error())
 import DOM.File.Types (Blob)
 
 
@@ -24,18 +24,12 @@ foreign import data MediaStream :: Type
 foreign import data MediaStreamTrack :: Type
 foreign import data USER_MEDIA :: Effect
 
-foreign import createObjectURL :: forall e. Blob -> Eff e String
+foreign import createObjectURL :: ∀ e. Blob -> Eff e String
 
 foreign import hasUserMedia :: Boolean
-foreign import _getUserMedia
-  :: forall e. (MediaStream -> Eff e Unit) ->
-               (Error -> Eff e Unit) ->
-               MediaStreamConstraints ->
-               Eff e Unit
-
-
-foreign import stopMediaStream :: forall e. MediaStream -> Eff (userMedia :: USER_MEDIA | e) Unit
-foreign import playAudioStream :: forall e. MediaStream -> Eff (userMedia :: USER_MEDIA | e ) Unit
+foreign import _getUserMedia :: ∀ e. MediaStreamConstraints -> EffFnAff e MediaStream
+foreign import stopMediaStream :: ∀ e. MediaStream -> Eff (userMedia :: USER_MEDIA | e) Unit
+foreign import playAudioStream :: ∀ e. MediaStream -> Eff (userMedia :: USER_MEDIA | e ) Unit
 
 
 newtype MediaStreamConstraints =
@@ -44,8 +38,8 @@ newtype MediaStreamConstraints =
                            }
 
 
-getUserMedia :: forall e. MediaStreamConstraints -> Aff (userMedia :: USER_MEDIA | e) MediaStream
-getUserMedia c = makeAff (\e s -> _getUserMedia s e c)
+getUserMedia :: ∀ e. MediaStreamConstraints -> Aff (userMedia :: USER_MEDIA | e) MediaStream
+getUserMedia = fromEffFnAff <<< _getUserMedia
 
 
 mediaStreamToBlob :: MediaStream -> Blob

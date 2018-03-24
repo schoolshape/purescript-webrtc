@@ -44,10 +44,6 @@ exports.stop = function(recorder) {
 };
 
 
-exports.onRecordStop = function(recorder) {
-    return function(onFail) { return function(onSuccess) { return function() {
-        recorder.onstop = function(stopEvent) {
-            onSuccess()();
-        }
-    };};};
+exports.onRecordStop_ = function(recorder) {
+    return function(onError, onSuccess) { recorder.onstop = onSuccess; };
 };
