@@ -6,7 +6,6 @@ exports.mediaRecorder = function(mediaStream) {
     return function(options) {
         return function(onDataAvailable) {
             return function() {
-                console.log(mediaStream);
                 var recorder = new MediaRecorder(mediaStream, options);
                 recorder.ondataavailable = function(event) {
                     onDataAvailable(event)();

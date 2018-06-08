@@ -2,22 +2,6 @@
 //
 exports.hasUserMedia = (typeof navigator === "object") && (typeof navigator.mediaDevices === "object") && (typeof navigator.mediaDevices.getUserMedia === "function")
 
-exports._getUserMediaOld = function(success) {
-    return function(error) {
-        return function(constraints) {
-            return function() {
-                navigator.mediaDevices.getUserMedia(constraints)
-                    .then(function(mediaStream) {
-                      success(mediaStream)();
-                    })
-                    .catch(function(e) {
-                      error(e)();
-                    });
-            };
-        };
-    };
-}
-
 exports._getUserMedia = function(constraints) {
     return function(onError, onSuccess) {
         navigator.mediaDevices.getUserMedia(constraints)
