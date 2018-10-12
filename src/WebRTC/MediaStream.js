@@ -12,6 +12,7 @@ exports._getUserMedia = function(constraints) {
                 onError(e);
             });
 
+        // Canceller
         return function(cancelError, cancelerError, cancelerSuccess) {
             cancelerSuccess();
         };

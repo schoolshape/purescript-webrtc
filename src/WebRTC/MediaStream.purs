@@ -2,7 +2,6 @@ module WebRTC.MediaStream
 ( MediaStream(..)
 , MediaStreamTrack(..)
 , MediaStreamConstraints(..)
-, USER_MEDIA()
 , hasUserMedia
 , getUserMedia
 , stopMediaStream
@@ -14,22 +13,21 @@ module WebRTC.MediaStream
 
 import Prelude
 import Unsafe.Coerce (unsafeCoerce)
-import Control.Monad.Aff (Aff)
-import Control.Monad.Aff.Compat (EffFnAff, fromEffFnAff)
-import Control.Monad.Eff (Eff(), kind Effect)
-import DOM.File.Types (Blob)
+import Effect.Aff (Aff)
+import Effect.Aff.Compat (EffectFnAff, fromEffectFnAff)
+import Effect (Effect)
+import Web.File.Blob (Blob)
 
 
 foreign import data MediaStream :: Type
 foreign import data MediaStreamTrack :: Type
-foreign import data USER_MEDIA :: Effect
 
-foreign import createObjectURL :: ∀ e. Blob -> Eff e String
+foreign import createObjectURL :: Blob -> Effect String
 
 foreign import hasUserMedia :: Boolean
-foreign import _getUserMedia :: ∀ e. MediaStreamConstraints -> EffFnAff e MediaStream
-foreign import stopMediaStream :: ∀ e. MediaStream -> Eff (userMedia :: USER_MEDIA | e) Unit
-foreign import playAudioStream :: ∀ e. MediaStream -> Eff (userMedia :: USER_MEDIA | e ) Unit
+foreign import _getUserMedia :: MediaStreamConstraints -> EffectFnAff MediaStream
+foreign import stopMediaStream :: MediaStream -> Effect Unit
+foreign import playAudioStream :: MediaStream -> Effect Unit
 
 
 newtype MediaStreamConstraints =
@@ -38,8 +36,8 @@ newtype MediaStreamConstraints =
                            }
 
 
-getUserMedia :: ∀ e. MediaStreamConstraints -> Aff (userMedia :: USER_MEDIA | e) MediaStream
-getUserMedia = fromEffFnAff <<< _getUserMedia
+getUserMedia :: MediaStreamConstraints -> Aff MediaStream
+getUserMedia = fromEffectFnAff <<< _getUserMedia
 
 
 mediaStreamToBlob :: MediaStream -> Blob

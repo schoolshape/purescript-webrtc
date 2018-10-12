@@ -17,13 +17,12 @@
     "output"
   ],
   "dependencies": {
-    "purescript-aff": "~4.0.2",
-    "purescript-unsafe-coerce": "~3.0.0",
-    "purescript-media-types": "^3.0.0",
-    "purescript-dom": "^4.15.0",
-    "purescript-maps": "^3.5.0"
+    "purescript-aff": "~5.0.0",
+    "purescript-unsafe-coerce": "~4.0.0",
+    "purescript-media-types": "^4.0.1",
+    "purescript-ordered-collections": "^1.4.0",
+    "purescript-web-file": "^1.0.0"
   },
   "devDependencies": {
-    "purescript-psci-support": "^3.0.0"
   }
 }
