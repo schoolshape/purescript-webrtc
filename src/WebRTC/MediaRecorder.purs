@@ -28,7 +28,8 @@ type DataHandler = Blob -> Effect Unit
 foreign import hasMediaRecorder :: Boolean
 foreign import mediaRecorder :: MediaStream -> MediaRecorderOptions -> DataHandler -> Effect MediaRecorder
 
-foreign import start :: MediaRecorder -> Effect Unit
+type TimesliceMillis = Number -- in Milliseconds
+foreign import start :: TimesliceMillis -> MediaRecorder -> Effect Unit
 foreign import stop  :: MediaRecorder -> Effect Unit
 foreign import onRecordStop_ :: MediaRecorder -> EffectFnAff Unit
 

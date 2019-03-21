@@ -30,9 +30,10 @@ exports.mediaRecorder = function(mediaStream) {
 };
 
 
-exports.start = function(recorder) {
-    return function() { recorder.start(); };
-};
+exports.start =
+    function(timeSlice) { return function(recorder) { return function() {
+        recorder.start(timeSlice);
+    };};};
 
 
 exports.stop = function(recorder) {
