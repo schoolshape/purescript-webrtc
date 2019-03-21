@@ -8,7 +8,7 @@ exports.mediaRecorder = function(mediaStream) {
             return function() {
                 var recorder = new MediaRecorder(mediaStream, options);
                 recorder.ondataavailable = function(event) {
-                    onDataAvailable(event)();
+                    onDataAvailable(event.data)();
                 };
 
                 // Stop the recorder when all tracks stop

@@ -68,7 +68,7 @@ exports.onicecandidate = function(f) {
 };
 
 
-exports.ontrack= function(f) {
+exports.ontrack = function(f) {
     return function(pc) {
         return function() {
             pc.ontrack = function(event) {
