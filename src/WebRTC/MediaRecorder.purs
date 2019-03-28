@@ -31,8 +31,12 @@ foreign import mediaRecorder :: MediaStream -> MediaRecorderOptions -> DataHandl
 type TimesliceMillis = Number -- in Milliseconds
 foreign import start :: TimesliceMillis -> MediaRecorder -> Effect Unit
 foreign import stop  :: MediaRecorder -> Effect Unit
-foreign import onRecordStop_ :: MediaRecorder -> EffectFnAff Unit
+foreign import onRecordEvent :: String -> MediaRecorder -> EffectFnAff Unit
 
 
 onRecordStop :: MediaRecorder -> Aff Unit
-onRecordStop = fromEffectFnAff <<< onRecordStop_
+onRecordStop = fromEffectFnAff <<< onRecordEvent "stop"
+
+
+onRecordStart :: MediaRecorder -> Aff Unit
+onRecordStart = fromEffectFnAff <<< onRecordEvent "start"
